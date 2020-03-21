@@ -1,0 +1,22 @@
+{"tweets": [
+    {
+      "id": 1,
+      "date": "1111-11-11",
+      "hashtag": "corona"
+    },
+    {
+      "id": 2,
+      "date": "1111-11-11",
+      "hashtag": "corona"
+    },
+    {
+      "id": 2,
+      "date": "2222-12-12",
+      "hashtag": "frogs"
+    },
+    {
+      "id": 3,
+      "date": "1111-11-11",
+      "hashtag": "corona"
+    }
+]}

@@ -1,9 +1,21 @@
+h1 {
+  border-style: solid;
+  border-width: 5px;
+}
+
+div {
+  border-style: solid;
+  border-width: 5px;
+  border-color: red; 
+}
+
+
 /* body {
-    margin: 0;
-    padding: 0;
-  }
-  
-  header {
+    border: 10px;
+    border-color: red;
+} 
+
+header {
     background-color: #4caf50;
     margin: 0 auto;
     height: 50px;
