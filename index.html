@@ -7,18 +7,19 @@
   </head>
   <body>
     <h1> Test Header </h1>
-    <div id="chart-area">Chart area</div>
+    <canvas id="myChart"></canvas>
     <div id="current-search-area">Current search area</div>
     <div id= past-search-area>Past search area</div>
     <form>
       <label>Starting Date:</label>
-      <input type="date" value="1111-11-11">
+      <input type="text" value="2010">
       <label>Ending Date:</label>
-      <input type="date" value="2222-12-22">
+      <input type="text" value="2020">
       <label>Hashtag</label>
-      <input type="text" value="Test Hashtag">
+      <input type="text" value="hashtag1">
       <input type="submit"> 
     </form>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script src="./index.js"></script>
   </body>
 </html>
