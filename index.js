@@ -43,7 +43,7 @@ function renderChart(countResult) {
         labels: putDatesInArray(countResult),
         datasets: [{
             label: 'My First dataset',
-            backgroundColor: 'rgb(255, 99, 132)',
+            fill: false,
             borderColor: 'rgb(255, 99, 132)',
             data: putUsesInArray(countResult)
         }]
