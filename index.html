@@ -8,9 +8,9 @@
   <body>
     <h1> Test Header </h1>
     <canvas id="myChart"></canvas>
-    <div id="current-search-area">Current search area</div>
-    <div id= past-search-area>Past search area</div>
-    <form>
+    <ul id= "current-search-area">Current search area</ul>
+    <ul id= "past-search-area">Past search area</ul>
+    <form id="chart_form">
       <label>Starting Date:</label>
       <input type="text" value="2010">
       <label>Ending Date:</label>
@@ -21,6 +21,15 @@
       <input type="text" value="hashtag2">
       <input type="submit"> 
     </form>
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <form id="username">
+          <label>Username:</label>
+          <input type="text" value="Will">
+          <input type="submit">
+        </form>
+      </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script src="./index.js"></script>
   </body>

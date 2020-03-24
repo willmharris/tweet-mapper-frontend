@@ -10,61 +10,33 @@ div {
 }
 
 
-/* body {
-    border: 10px;
-    border-color: red;
-} 
 
-header {
-    background-color: #4caf50;
-    margin: 0 auto;
-    height: 50px;
-  }
-  
-  header h2 {
-    padding: 10px;
-    margin: 0;
-  }
-  
-  main {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
-    grid-gap: 20px;
-    padding-top: 10px;
-    padding-bottom: 30px;
-  }
-  
-  div.card {
-    background-color: #eeeeee;
-    height: 250px;
-    width: 300px;
-    box-shadow: 10px 10px grey;
-    padding: 10px;
-    border-radius: 10px;
-  }
-  
-  p {
-    font-size: 1.5em;
-    color: black;
-    font-family: Helvetica;
-  }
-  
-  li {
-    font-size: 1.05em;
-    list-style: none;
-    padding-right: 20px;
-  }
-  
-  button {
-    font-size: .65em;
-    color: #fff;
-    background-color: green;
-    border-radius: 10px;
-  }
-  
-  button.release {
-    float: right;
-    background-color: #E1332D;
-  }
-   */
+
+
+
+
+
+
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
