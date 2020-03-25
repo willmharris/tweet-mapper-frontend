@@ -8,17 +8,18 @@
   <body>
     <h1> Test Header </h1>
     <canvas id="myChart"></canvas>
-    <ul id= "current-search-area">Current search area</ul>
-    <ul id= "past-search-area">Past search area</ul>
-    <form id="chart_form">
+    <ul id="recent-searches">Recent searches</ul>
+    <ul id="favorite-searches">Favorite searches</ul>
+    <form id="search-form">
       <label>Starting Date:</label>
-      <input type="text" value="2010">
+      <input type="text" value="2010" id="start-date">
       <label>Ending Date:</label>
-      <input type="text" value="2020">
-      <label>First Hashtag</label>
-      <input type="text" value="hashtag1">
-      <label>Second Hashtag</label>
-      <input type="text" value="hashtag2">
+      <input type="text" value="2020" id="end-date">
+      <label>Hashtag 1:</label>
+      <input type="text" value="hashtag1" class="hashtag-input">
+      <label>Hashtag 2:</label>
+      <input type="text" value="hashtag2" class="hashtag-input">
+      <button id="add-hashtag">Add a hashtag</button>
       <input type="submit"> 
     </form>
     <div id="myModal" class="modal">
