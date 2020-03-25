@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Allows the search form to accept input, transmit data to the server, and render a chart in response
   document.querySelector("#search-form").addEventListener("submit", addSearchFunction)
   // Allows the user to add additional hashtag inputs 
-  document.querySelector("#add-hashtag").addEventListener("click", addHashtags)
+  document.querySelector("#add-hashtag").addEventListener("click", addHashtagInput)
   // Adds login screen 
   addLogin()
 })
@@ -22,7 +22,12 @@ function addSearchFunction(event) {
     payload[`hashtag${counter}`] = hashtag 
     counter ++ 
   })
-  // Requests the server for the search parameters and render a chart based on the returned information 
+  getChartInformationFromDatabase(payload)
+  
+}
+
+function getChartInformationFromDatabase(payload) {
+  // Requests the server for the search parameters and render a chart based on the returned information and adds the search to the current searches bar 
   fetch("http://localhost:3000/tweets", {
     method: "POST",
     headers: {
@@ -35,14 +40,21 @@ function addSearchFunction(event) {
   }).then(
     resp => resp.json()
   ).then(
-    data => renderSearchResults(data)
+    data => {
+      renderChart(data)
+      renderSearch(data)
+    }
   )
 }
 
-function addHashtags(event) {
+function addHashtagInput(event) {
   event.preventDefault() 
   // Get the search form 
   searchForm = document.querySelector("#search-form")
+  // Find the current location in the form I should append the input to
+  searchFormLength = searchForm.children.length 
+  currentNumberOfHashtags = (searchFormLength - 6)/2
+  currentHashtagNumber = currentNumberOfHashtags + 1 
   // Make the new label
   newHashtagLabel = document.createElement('label')
   newHashtagLabel.innerText = `Hashtag ${currentHashtagNumber}:`
@@ -50,80 +62,70 @@ function addHashtags(event) {
   newHashtagInput = document.createElement("input")
   newHashtagInput.type = "text"
   newHashtagInput.classList.add("hashtag-input")
-  // Find the current location in the form I should append the input to
-  searchFormLength = searchForm.children.length 
-  currentNumberOfHashtags = (searchFormLength - 6)/2
-  currentHashtagNumber = currentNumberOfHashtags + 1 
   // Append the input 
   searchForm.insertBefore(newHashtagInput, searchForm.children[searchFormLength - 2])
   searchForm.insertBefore(newHashtagLabel, searchForm.children[searchFormLength - 2])
 }
 
-function renderSearchResults(data) {
-  debugger 
-  let tweetDates1 = data[0].map(tweet => tweet.date)
-  let tweetDates2 = data[1].map(tweet => tweet.date)
-  let countResult1 = {}
-  let countResult2 = {}
-  tweetDates1.forEach(date => getDateCount(date, countResult1))
-  tweetDates2.forEach(date => getDateCount(date, countResult2))
-  renderChart(countResult1, countResult2)
-  renderSearch(data)
-}
-
-function getDateCount(date, countResult) {
-  if (Object.keys(countResult).includes(date)) {
-    countResult[date] = countResult[date] + 1 
-  } else {
-    countResult[date] = 1
-  }
-}
-
-function renderChart(countResult1, countResult2) {
-  let ctx = document.getElementById('myChart').getContext('2d');
+function renderChart(data) {
+  // Get chart element
+  let ctx = document.getElementById('myChart').getContext('2d')
+  // Make the chart, using the formatDataForChart function
   let chart = new Chart(ctx, {
-    // The type of chart we want to create
     type: 'line',
-    // The data for our dataset
-    data: {
-        labels: putDatesInArray(countResult1),
-        datasets: [{
-            label: 'Hashtag1',
-            fill: false,
-            borderColor: 'red',
-            data: putUsesInArray(countResult1)
-        },
-        {
-          label: 'Hashtag2',
-          fill: false,
-          borderColor: 'blue',
-          data: putUsesInArray(countResult2)
-        }]
-    },
-    // Configuration options go here
+    data: formatDataForChart(data),
     options: {}
   })  
 }
 
-function putDatesInArray(countResult) {
-  let datesArray = []
-  for (const date in countResult) {
-    datesArray.push(date)
+function formatDataForChart(data) {
+  // Put hashtag data in an array 
+  let hashtagDataArray = Object.entries(data)
+  // Get date labels from the data array 
+  let dates = Object.keys(hashtagDataArray[0][1])
+  // Set up a color array to iterate through: the first element is the counter, the second element is the list of possible colors
+  let colorArray = [0, ["black", "red", "blue", "green", "purple", "orange"]]
+  // Iterate through each hashtag and format the data to be read by the chart
+  let datasetArray = []
+  hashtagDataArray.forEach(hashtagData => {
+    formatHashtagDataForChart(hashtagData, datasetArray, colorArray)
+  })
+  return {
+    labels: dates,
+    datasets: datasetArray
   }
-  return datesArray 
 }
 
-function putUsesInArray(countResult) {
-  let usesArray = []
-  for (const date in countResult) {
-    usesArray.push(countResult[date])
+function formatHashtagDataForChart(hashtagData, datasetArray, colorArray) {
+  // Set up information from the hashtag data passed in
+  let currentHashtag = hashtagData[0]
+  let currentHashtagDateInfo = hashtagData[1]
+  // Set up an object to be passed into the dataset array
+  let chartObject = {}
+  // Assign label 
+  chartObject["label"] = currentHashtag 
+  // Assign fill information 
+  chartObject["fill"] = false 
+  // Get current color, and loop around if at the end of the array
+  let currentColor = colorArray[0]
+  if (currentColor === 7) {
+    currentColor = 0
   }
-  return usesArray
+  // Assign line color 
+  chartObject["borderColor"] = colorArray[1][currentColor]
+  colorArray[0] += 1
+  // Assign data 
+  let useByDateArray = Object.values(currentHashtagDateInfo)
+  chartObject["data"] = useByDateArray
+  // Add the working object to the dataset array 
+  datasetArray.push(chartObject)
 }
 
 function addLogin() {
+  // Grab and display login screen
   const modal = document.getElementById("myModal");
   modal.style.display = "block"
+  // Allow the user to submit a username and leads to the mainpage while displaying the user's favorite seraches 
   document.querySelector('#username').addEventListener('submit', (event) => {
     event.preventDefault()
     modal.style.display = "none" 
@@ -134,57 +136,109 @@ function addLogin() {
 }
 
 function renderFavorites(userData) {
+  // Set user id in the header to be used by other functions 
   document.querySelector('h1').id = userData.id 
-  favoritesArea = document.querySelector('#favorite-searches')
+  // Get the favorites bar
+  let favoritesArea = document.querySelector('#favorite-searches')
+  // Get all the user's searches 
   let searches = userData.searches
+  // Display each search in the favorites bar with execute and delete functions 
   searches.forEach(search => {
-    listItem = document.createElement('li')
-    listItem.innerText = search.hashtags
-    listItem.dataset.searchId = search.id
-    listItem.addEventListener("click", displaySearch)
-
-    deleteBtn = document.createElement('button')
-    deleteBtn.addEventListener('click', deleteSearch)
-    
-    listItem.append(deleteBtn)
-    favoritesArea.append(listItem)
+    renderSearchInFavorites(search)
   })
 }
 
-function displaySearch(event) {
-  form = document.querySelector('#search-form')
-  searches = event.target.innerText.split(' ')
-  form.children[5].value = searches[0]
-  form.children[7].value = searches[1]
-  form.children[8].click()
+function renderSearchInFavorites(search) {
+  // Get information from the passed in search 
+  let startDate = search.start_date
+  let endDate = search.end_date
+  let hashtags = search.hashtags
+  // Get the favorites bar 
+  let favoritesBar = document.querySelector("#favorite-searches")
+  // Make list item for the search 
+  let searchListItem = document.createElement('li')
+  // Set the list item text to the search information 
+  searchListItem.innerText = `Start Date: ${startDate} End Date: ${endDate} Hashtags: ${hashtags}`
+  // Assign search information to the list item dataset
+  searchListItem.dataset.startDate = startDate
+  searchListItem.dataset.endDate = endDate
+  searchListItem.dataset.hashtags = hashtags
+  // Set the search id in the list item dataset to be found if deleted
+  searchListItem.dataset.searchId = search.id
+  // Add search execution functionality
+  searchListItem.addEventListener("click", executeSearch)
+  // Add delete functionality
+  let deleteButton = document.createElement('button')
+  deleteButton.innerText = "Remove"
+  deleteButton.addEventListener('click', deleteSearch)
+  // Append the delete button and list item
+  searchListItem.append(deleteButton)
+  favoritesBar.append(searchListItem)
+}
+
+function executeSearch(event) {
+  // Get search form 
+  let searchForm = document.querySelector('#search-form')
+  // Get search input information from dataset 
+  let startDate = event.target.dataset.startDate 
+  let endDate = event.target.dataset.endDate
+  let hashtags = event.target.dataset.hashtags
+  let hashtagsArray = hashtags.split(' ')
+  // Prepare payload 
+  let payload = {start: startDate, end: endDate}
+  let counter = 1 
+  hashtagsArray.forEach(hashtag => {
+    payload[`hashtag${counter}`] = hashtag 
+    counter ++ 
+  })
+  // Render the chart 
+  getChartInformationFromDatabase(payload)
 }
 
 function deleteSearch(event) {
+  // Get search id from the parent element
   searchId = event.target.parentElement.dataset.searchId 
+  // Send the delete request to the database for that idea and remove the parent element from the DOM
   fetch(`http://localhost:3000/searches/${searchId}`, {
     method: "DELETE"
   }).then(event.target.parentElement.remove())
 }
 
 function renderSearch(data) {
-  hashtag1 = data[0][0].hashtag
-  hashtag2 = data[1][0].hashtag
-  search = `${hashtag1} ${hashtag2}`
-  
-  listItem = document.createElement('li')
-  listItem.innerText = search 
-
-  saveBtn = document.createElement('button')
-  saveBtn.addEventListener("click", saveSearch)
-
-  listItem.append(saveBtn)
-  searchArea = document.querySelector("#recent-searches")
-  searchArea.append(listItem)
+  // Get recent search area 
+  recentSearchArea = document.querySelector("#recent-searches")
+  // Get list of hashtags 
+  let hashtagsArray = Object.keys(data)
+  // Get start date and end date 
+  let dates = Object.keys(data[hashtagsArray[0]])
+  let startDate = dates[0]
+  let endDate = dates[dates.length -1]
+  // Create search 
+  let search = `Start Date: ${startDate} End Date: ${endDate} Hashtags: ${hashtagsArray}`
+  // Create list item for the search
+  let searchListItem = document.createElement('li')
+  searchListItem.innerText = search 
+  // Add search information to that list item's dataset
+  searchListItem.dataset.startDate = startDate
+  searchListItem.dataset.endDate = endDate
+  searchListItem.dataset.hashtags = hashtagsArray
+  // Create save button 
+  let saveButton = document.createElement('button')
+  saveButton.innerText = "Save"
+  saveButton.addEventListener("click", saveSearch)
+  // Append elements 
+  searchListItem.append(saveButton)
+  recentSearchArea.append(searchListItem)
 }
 
 function saveSearch(event) {
-  hashtags = event.target.parentElement.innerText
+  // Get information from the list item dataset
+  let hashtags = event.target.parentElement.dataset.hashtags
+  let startDate = event.target.parentElement.dataset.startDate
+  let endDate = event.target.parentElement.dataset.endDate
+  // Get user id from the header id, which was set on login
   userId = document.querySelector('h1').id
+  // Post the search information to the database 
   fetch("http://localhost:3000/searches", {
     method: "POST",
     headers: {
@@ -193,7 +247,9 @@ function saveSearch(event) {
     },
     body: JSON.stringify({ 
       user_id: userId, 
-      hashtags: hashtags
+      hashtags: hashtags,
+      start_date: startDate,
+      end_date: endDate
     })
   })
 }
