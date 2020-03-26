@@ -2,32 +2,41 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Twitter Mapper</title>
+    <title>Tweet Mapper</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <h1> Test Header </h1>
-    <canvas id="myChart"></canvas>
-    <ul id="recent-searches">Recent searches</ul>
-    <ul id="favorite-searches">Favorite searches</ul>
-    <form id="search-form">
-      <label>Starting Date:</label>
-      <input type="text" value="2010" id="start-date">
-      <label>Ending Date:</label>
-      <input type="text" value="2020" id="end-date">
-      <label>Hashtag 1:</label>
-      <input type="text" value="hashtag1" class="hashtag-input">
-      <label>Hashtag 2:</label>
-      <input type="text" value="hashtag2" class="hashtag-input">
-      <button id="add-hashtag">Add a hashtag</button>
-      <input type="submit"> 
-    </form>
-    <div id="myModal" class="modal">
+    <div id="chart-container">
+      <canvas id="myChart"></canvas>
+    </div>
+    <div id="recent-searches-container">
+      <ul id="recent-searches">Recent searches</ul>
+    </div>
+    <div id="favorite-searches-container">
+      <ul id="favorite-searches">Favorite searches</ul>
+    </div>
+    <div id="search-form-container">
+      <form id="search-form">
+        <label>Starting Date:</label>
+        <input type="text" value="2010" id="start-date">
+        <label>Ending Date:</label>
+        <input type="text" value="2020" id="end-date">
+        <label>Hashtag 1:</label>
+        <input type="text" value="hashtag1" class="hashtag-input">
+        <label>Hashtag 2:</label>
+        <input type="text" value="hashtag2" class="hashtag-input">
+        <button id="add-hashtag">Add a hashtag</button>
+        <input type="submit"> 
+      </form>
+    </div>
+    <div id="myModal" class="modal" style="background-image: url('https://media.wired.com/photos/5a55b72db1cfb87f3206aa5b/master/w_2000,c_limit/Twitter-Hole-featured.jpg');">
       <div class="modal-content">
+        <h3>Welcome to Tweet Mapper!</h3>
         <form id="username">
           <label>Username:</label>
-          <input type="text" value="Will">
-          <input type="submit">
+          <input type="text" value="Will" class="login-input">
+          <input type="submit" value="Login" class="login-button">
         </form>
       </div>
     </div>

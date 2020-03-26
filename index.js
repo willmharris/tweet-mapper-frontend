@@ -61,7 +61,7 @@ function renderChart(data) {
   let chart = new Chart(ctx, {
     type: 'line',
     data: formatAggregateDataForChart(data),
-    options: {}
+    options: {responsive: true }
   })  
 }
 
@@ -71,7 +71,7 @@ function formatAggregateDataForChart(data) {
   // Get date labels from the data array 
   let dates = Object.keys(hashtagDataArray[0][1])
   // Set up a color array to iterate through: the first element is the counter, the second element is the list of possible colors
-  let colorArray = [0, ["black", "red", "blue", "green", "purple", "orange"]]
+  let colorArray = [0, ["black", "red", "white", "green", "purple", "orange"]]
   // Iterate through each hashtag and format the data to be read by the chart
   let datasetArray = []
   hashtagDataArray.forEach(hashtagData => {
@@ -138,6 +138,7 @@ function renderSearchInRecentSearchesBar(data) {
 function saveSearch(event) {
   // Get information from the list item dataset
   let hashtags = event.target.parentElement.dataset.hashtags
+  let newHashtagSpacing = hashtags.split(",").join(' ')
   let startDate = event.target.parentElement.dataset.startDate
   let endDate = event.target.parentElement.dataset.endDate
   // Get user id from the header id, which was set on login
@@ -151,16 +152,13 @@ function saveSearch(event) {
     },
     body: JSON.stringify({ 
       user_id: userId, 
-      hashtags: hashtags,
+      hashtags: newHashtagSpacing,
       start_date: startDate,
       end_date: endDate
     })
   }).then(
     resp => resp.json()
   ).then(data => {
-    // Modify hashtag spacing to work with the method below 
-    let newHashtagSpacing = data.hashtags.split(",").join(' ')
-    data.hashtags = newHashtagSpacing
     // Add the saved search to the favorites bar 
     renderSavedSearchInFavoritesBar(data)
   })
@@ -196,8 +194,14 @@ function addLogin() {
   // Allow the user to submit a username and leads to the mainpage while displaying the user's favorite seraches 
   document.querySelector('#username').addEventListener('submit', (event) => {
     event.preventDefault()
+    // Get the username 
+    let username = event.target.children[1].value
+    // Remove the login screen
     modal.style.display = "none" 
-    fetch(`http://localhost:3000/users/?name=${event.target.children[1].value}`).then(
+    // Display user in the header 
+    document.querySelector('h1').innerText = `Welcome ${username}!`
+    // Get favorite searches for that user 
+    fetch(`http://localhost:3000/users/?name=${username}`).then(
       resp => resp.json()
     ).then(data => renderFavoritesBar(data))
   })
