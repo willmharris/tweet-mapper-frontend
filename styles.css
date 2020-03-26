@@ -41,8 +41,7 @@ body {
     top: 60px;
     left: 0px;
     height: 335px;
-    width: 300px;
-    border: 1px dotted red;
+    width: 250px;
     overflow-y: scroll;
 }
 
@@ -50,9 +49,8 @@ body {
   position: fixed;
   bottom: 60px;
   left: 0px;
-  border: 1px dotted red;
   height: 335px;
-  width: 300px;
+  width: 250px;
   overflow-y: scroll;
 }
 
@@ -60,8 +58,7 @@ body {
   position: fixed;
   top: 50px;
   right: 20px;
-  border: 1px dotted red;
-  width: 1050px;
+  width: 1075px;
   height: 500px;
 }
 
@@ -69,9 +66,18 @@ body {
   position: fixed;
   bottom: 60px;
   right: 20px;
-  border: 1px dotted red;
   height: 100px;
-  width: 1050px;
+  width: 1075px;
+}
+
+.favorite-search {
+  border: 1px solid black;
+  margin-right: 45px;
+}
+
+.recent-search {
+  border: 1px solid white;
+  margin-right: 45px;
 }
 
  

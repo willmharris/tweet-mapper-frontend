@@ -61,7 +61,7 @@ function renderChart(data) {
   let chart = new Chart(ctx, {
     type: 'line',
     data: formatAggregateDataForChart(data),
-    options: {responsive: true }
+    options: {}
   })  
 }
 
@@ -117,11 +117,15 @@ function renderSearchInRecentSearchesBar(data) {
   let dates = Object.keys(data[hashtagsArray[0]])
   let startDate = dates[0]
   let endDate = dates[dates.length -1]
-  // Create search 
-  let search = `Start Date: ${startDate} End Date: ${endDate} Hashtags: ${hashtagsArray}`
   // Create list item for the search
-  let searchListItem = document.createElement('li')
-  searchListItem.innerText = search 
+  let searchListItem = document.createElement('ul')
+  searchListItem.classList.add('recent-search')
+  // Add search information to the search list item 
+  let datesListItem = document.createElement('li')
+  datesListItem.innerText = `${startDate} - ${endDate}`
+  let hashtagsListItem = document.createElement('li')
+  hashtagsListItem.innerText = hashtagsArray.join(' ')
+  searchListItem.append(datesListItem, hashtagsListItem)
   // Add search information to that list item's dataset
   searchListItem.dataset.startDate = startDate
   searchListItem.dataset.endDate = endDate
@@ -228,9 +232,14 @@ function renderSavedSearchInFavoritesBar(search) {
   // Get the favorites bar 
   let favoritesBar = document.querySelector("#favorite-searches")
   // Make list item for the search 
-  let searchListItem = document.createElement('li')
-  // Set the list item text to the search information 
-  searchListItem.innerText = `Start Date: ${startDate} End Date: ${endDate} Hashtags: ${hashtags}`
+  let searchListItem = document.createElement('ul')
+  searchListItem.classList.add('favorite-search')
+  // Add search information to the search list item 
+  let datesListItem = document.createElement('li')
+  datesListItem.innerText = `${startDate} - ${endDate}`
+  let hashtagsListItem = document.createElement('li')
+  hashtagsListItem.innerText = hashtags 
+  searchListItem.append(datesListItem, hashtagsListItem)
   // Assign search information to the list item dataset
   searchListItem.dataset.startDate = startDate
   searchListItem.dataset.endDate = endDate
@@ -238,7 +247,8 @@ function renderSavedSearchInFavoritesBar(search) {
   // Set the search id in the list item dataset to be found if deleted
   searchListItem.dataset.searchId = search.id
   // Add search execution functionality
-  searchListItem.addEventListener("click", executeSearch)
+  datesListItem.addEventListener("click", executeSearch)
+  hashtagsListItem.addEventListener("click", executeSearch)
   // Add delete functionality
   let deleteButton = document.createElement('button')
   deleteButton.innerText = "Remove"
@@ -252,9 +262,9 @@ function executeSearch(event) {
   // Get search form 
   let searchForm = document.querySelector('#search-form')
   // Get search input information from dataset 
-  let startDate = event.target.dataset.startDate 
-  let endDate = event.target.dataset.endDate
-  let hashtags = event.target.dataset.hashtags
+  let startDate = event.target.parentElement.dataset.startDate 
+  let endDate = event.target.parentElement.dataset.endDate
+  let hashtags = event.target.parentElement.dataset.hashtags
   let hashtagsArray = hashtags.split(' ')
   // Prepare payload 
   let payload = {start: startDate, end: endDate}
@@ -265,7 +275,7 @@ function executeSearch(event) {
   })
   // Indicate the search has been previously saved
   let searchSaved = true 
-  // Render the chart 
+  // Render the chart
   getChartDataFromDatabase(payload, searchSaved)
 }
 
